@@ -25,6 +25,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false; 
     options.Password.RequiredLength = 6;
 
+    options.User.RequireUniqueEmail = false; // โปรเจคนี้ไม่ได้ใช้ Email จึงปิดไว้
+
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
     options.Lockout.MaxFailedAccessAttempts = 5;
 

@@ -1,14 +1,15 @@
 ﻿using BackendChallenge.Data;
 using BackendChallenge.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BackendChallenge.Controllers
 {
-    [Route("api/[auth]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -26,13 +27,20 @@ namespace BackendChallenge.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            // ตรวจว่ามี Username ไหม
+            // ตรวจว่ามี Username ซ้ำไหม
             if (await _userManager.FindByNameAsync(request.Username) != null)
             {
                 return BadRequest(new { message = "Username already exists" });
             }
 
-            var user = new IdentityUser { UserName = request.Username };
+            var user = new IdentityUser 
+            {
+                UserName = request.Username,
+                Email = "Test@email.com" // โปรเจคนี้ไม่ใช้ Email
+            };
+
+            user.EmailConfirmed = true;
+
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (result.Succeeded)
@@ -50,7 +58,7 @@ namespace BackendChallenge.Controllers
             {
                 var authClaims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 

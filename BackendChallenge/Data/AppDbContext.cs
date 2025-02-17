@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BackendChallenge.Data
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    public class AppDbContext : IdentityDbContext<User>
     {
-        public AppDbContext(DbContextOptions options) : base(options) {}
-        public DbSet<User> User { get; set; }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+
         public DbSet<Book> Book { get; set; }
         public DbSet<UserLike> UserLike { get; set; }
 
@@ -21,15 +21,20 @@ namespace BackendChallenge.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserLike>().HasKey(ul => new { ul.UserId, ul.BookId });
+
+            // relationship between UserLike and User
             modelBuilder.Entity<UserLike>()
                 .HasOne(ul => ul.User)
                 .WithMany()
-                .HasForeignKey(ul => ul.UserId);
+                .HasForeignKey(ul => ul.UserId)
+                .HasPrincipalKey(u => u.UserId);
 
+            // relationship between UserLike and Book
             modelBuilder.Entity<UserLike>()
                 .HasOne(ul => ul.Book)
                 .WithMany()
                 .HasForeignKey(ul => ul.BookId);
+
         }
     }
 }

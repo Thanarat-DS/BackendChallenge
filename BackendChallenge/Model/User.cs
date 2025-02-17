@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace BackendChallenge.Model
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
         public int UserId { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
         public string Fullname { get; set; } = string.Empty;
     }
 }

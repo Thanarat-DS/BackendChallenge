@@ -2,6 +2,7 @@
 using BackendChallenge.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,43 +13,59 @@ namespace BackendChallenge.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(AppDbContext context)
+        public AuthController(AppDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _context = context;
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            if (await _context.User.AnyAsync(u => u.Username == request.Username))
+            // ตรวจว่ามี Username ไหม
+            if (await _userManager.FindByNameAsync(request.Username) != null)
             {
                 return BadRequest(new { message = "Username already exists" });
             }
 
-            var user = new User
+            var user = new IdentityUser { UserName = request.Username };
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded)
             {
-                Username = request.Username,
-                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                FullName = request.FullName
-            };
-
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "User registered successfully" });
+                return Ok(new { message = "User registered successfully" });
+            }
+            return BadRequest(result.Errors); 
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Username == request.Username);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            var user = await _userManager.FindByNameAsync(request.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                return Unauthorized(new { message = "Invalid username or password" });
-            }
+                var authClaims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
 
-            return Ok(new { message = "Login successful", user_id = user.Id });
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["Jwt:Issuer"],
+                    expires: DateTime.Now.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"]!)),
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)),
+                    SecurityAlgorithms.HmacSha256
+                    )
+                );
+
+                return Ok(new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
+            }
+            return Unauthorized();
+            
         }
     }
 }

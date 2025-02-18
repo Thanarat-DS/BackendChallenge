@@ -14,7 +14,7 @@ namespace BackendChallenge.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
         public AuthController(AppDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
@@ -33,10 +33,11 @@ namespace BackendChallenge.Controllers
                 return BadRequest(new { message = "Username already exists" });
             }
 
-            var user = new IdentityUser 
+            var user = new User 
             {
                 UserName = request.Username,
                 Email = "Test@email.com" // โปรเจคนี้ไม่ใช้ Email
+                Fullname = request.Fullname
             };
 
             user.EmailConfirmed = true;

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendChallenge.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250217174955_EditModelKeyAgain")]
-    partial class EditModelKeyAgain
+    [Migration("20250217181205_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

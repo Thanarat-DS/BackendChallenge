@@ -7,7 +7,7 @@ namespace BackendChallenge.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+        public AppDbContext(DbContextOptions options) : base(options) {}
 
         public DbSet<Book> Book { get; set; }
         public DbSet<UserLike> UserLike { get; set; }

@@ -49,7 +49,7 @@ namespace BackendChallenge.Migrations
 
                     b.HasKey("BookId");
 
-                    b.ToTable("Book");
+                    b.ToTable("Book", (string)null);
                 });
 
             modelBuilder.Entity("BackendChallenge.Model.User", b =>
@@ -135,7 +135,7 @@ namespace BackendChallenge.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("UserLike");
+                    b.ToTable("UserLike", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

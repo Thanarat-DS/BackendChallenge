@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using NuGet.Common;
 
 namespace BackendChallenge.Controllers
 {
@@ -17,7 +18,7 @@ namespace BackendChallenge.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthController(AppDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthController(AppDbContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -36,7 +37,7 @@ namespace BackendChallenge.Controllers
             var user = new User 
             {
                 UserName = request.Username,
-                Email = "Test@email.com" // โปรเจคนี้ไม่ใช้ Email
+                Email = "Test@email.com", // โปรเจคนี้ไม่ใช้ Email
                 Fullname = request.Fullname
             };
 
@@ -71,10 +72,10 @@ namespace BackendChallenge.Controllers
                     )
                 );
 
-                return Ok(new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(new { message = "Login successful", Token = new JwtSecurityTokenHandler().WriteToken(token) });
             }
-            return Unauthorized();
-            
+            return Unauthorized(new { message = "Invalid username or password" });
+
         }
     }
 }

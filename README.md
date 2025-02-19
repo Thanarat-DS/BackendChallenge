@@ -75,6 +75,28 @@ public class UserLike
 }
 ~~~
 
+<b>OnModelCreating</b>
+~~~ C#
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+   base.OnModelCreating(modelBuilder);
+
+   modelBuilder.Entity<UserLike>().HasKey(ul => new { ul.UserId, ul.BookId });
+
+   // relationship between UserLike and User
+   modelBuilder.Entity<UserLike>()
+       .HasOne(ul => ul.User)
+       .WithMany()
+       .HasForeignKey(ul => ul.UserId);
+
+   // relationship between UserLike and Book
+   modelBuilder.Entity<UserLike>()
+       .HasOne(ul => ul.Book)
+       .WithMany()
+       .HasForeignKey(ul => ul.BookId);
+
+}
+~~~
 
 ## 1. POST /login
 This is the user authentication API

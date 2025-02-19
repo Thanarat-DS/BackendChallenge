@@ -11,12 +11,12 @@ namespace BackendChallenge.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class BooksController : ControllerBase
     {
         private readonly HttpClient _httpClient;
         private readonly AppDbContext _context;
 
-        public BookController(HttpClient httpClient, AppDbContext context)
+        public BooksController(HttpClient httpClient, AppDbContext context)
         {
             _httpClient = httpClient;
             _context = context;

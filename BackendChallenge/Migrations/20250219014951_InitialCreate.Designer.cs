@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendChallenge.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250217181205_InitialCreate")]
+    [Migration("20250219014951_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -107,9 +107,6 @@ namespace BackendChallenge.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -128,8 +125,8 @@ namespace BackendChallenge.Migrations
 
             modelBuilder.Entity("BackendChallenge.Model.UserLike", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("BookId")
                         .HasColumnType("INTEGER");
@@ -280,7 +277,6 @@ namespace BackendChallenge.Migrations
                     b.HasOne("BackendChallenge.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasPrincipalKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

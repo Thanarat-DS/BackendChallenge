@@ -30,7 +30,6 @@ namespace BackendChallenge.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     Fullname = table.Column<string>(type: "TEXT", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -50,7 +49,6 @@ namespace BackendChallenge.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.UniqueConstraint("AK_AspNetUsers_UserId", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,7 +179,7 @@ namespace BackendChallenge.Migrations
                 name: "UserLike",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
                     BookId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -191,7 +189,7 @@ namespace BackendChallenge.Migrations
                         name: "FK_UserLike_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "UserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserLike_Book_BookId",

@@ -34,7 +34,7 @@ namespace BackendChallenge.Controllers
                 return BadRequest(new { message = "Username already exists" });
             }
 
-            var user = new User 
+            var user = new User
             {
                 UserName = request.Username,
                 Email = "Test@email.com", // โปรเจคนี้ไม่ใช้ Email

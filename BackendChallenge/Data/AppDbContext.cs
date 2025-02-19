@@ -26,8 +26,7 @@ namespace BackendChallenge.Data
             modelBuilder.Entity<UserLike>()
                 .HasOne(ul => ul.User)
                 .WithMany()
-                .HasForeignKey(ul => ul.UserId)
-                .HasPrincipalKey(u => u.UserId);
+                .HasForeignKey(ul => ul.UserId);
 
             // relationship between UserLike and Book
             modelBuilder.Entity<UserLike>()
